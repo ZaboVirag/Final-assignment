@@ -1,0 +1,304 @@
+---
+title: "R-Report VirágZábó"
+author: "VirágZábó"
+date: '2021 01 12 '
+output: html_document
+---
+
+Uploading Needed Packages 
+
+
+```{r setup, message = FALSE}
+#install.packages("openxlsx")
+#install.packages("base")
+#install.packages("dplyr")
+#install.packages("tidyverse")
+#install.packages("ggpubr")
+
+library(openxlsx) 
+library(dplyr) 
+library(tidyverse) 
+library(ggpubr)
+```
+
+Reading the Dataset 
+
+```{r message = FALSE}
+my_data <- read.xlsx("C:/Users/Virág/Downloads/global_mortality.xlsx")
+str(my_data)
+view(my_data)
+```
+##Executive Summary
+Using R statistical package (version 3.4.3), exploratory data analyses were performed and the current study's hypotheses were tested by performing  several paired sample Wilcoxon tests.
+
+The present research aims to explore how Hungarians and French differ in deaths related to psychic or psychosomatic phenomena. The comparisons were made in the light of the following aspects: 1) cardiovascular diseases, 2) cancers, 3) respiratory diseases (e.g. asthma), 4) digestive diseases, 5) suicide, 6) homicide, 7) alcohol disorders and 8) drug disorders. The study focused on in which group more people died according to the given criterion.
+(Naturelly, we are aware that deaths should be considered in proportion to the size of the population. This is an introductory course R designed to practice statistical procedures. Thus, we have not returned to correcting this limitation now.)
+
+Exploratory data analyses contained checking for missing values, exploring the nature and basic features of the variables and checking for normality of the variable.
+
+By the first hypothesis we assumed that in general significantly more Hungarian people died of cardiovascular diseases than French people. The hypothesis was supported: in general significantly more Hungarian people (*M* = 48.85) died of cardiovascular diseases than French people (*M* = 30,79), W = 729, *p* < .001
+By the second hypothesis we assumed that in general significantly more Hungarian people died of cancer than French people. The hypothesis was not supported: in general significantly more French people (*M* =  29.39) died of cancer than Hungarian people (*M* = 24.86), W = 0, *p* < .001
+By the third hypothesis we assumed that in general significantly more Hungarian people died of respiratory diseases than French people. The hypothesis was not supported: in general significantly more French people (*M* =  4.07) died of respiratory diseases than Hungarian people (*M* = 3.72),  W = 180, *p* <  .001.
+By the fourth hypothesis we assumed that in general significantly more Hungarian people died of digestive diseases than French people. The hypothesis was not supported: in general significantly more French people (*M* =  2.63) died of digestive diseases than Hungarian people (*M* = 2.19), W = 0, *p* < .001.
+By the fifth hypothesis we assumed that in general significantly more Hungarian people committed (successful) suicide than French people. The hypothesis was not supported: in general significantly more French people (*M* = 2.53) died of suicide than Hungarian people (*M* = 2.27), W = 184, *p* < .001.
+By the sixth hypothesis we assumed that in general significantly more Hungarian people died of homicide than French people. The hypothesis was supported: in general significantly more Hungarian people (*M* = 0.21) died of homicide than French people (*M* = 0.15), W = 639, *p* < .001.
+By the seventh hypothesis we assumed that in general significantly more Hungarian people died of alcohol disorder than French people. The hypothesis was supported: in general significantly more French people (*M* = 0.61) died of alcohol disorder than Hungarian (*M* = 0.52), W = 219, *p* = 0.01.
+By the eight hypothesis we assumed that in general significantly more Hungarian people died of drug disorder than French people. The hypothesis was supported: in general significantly more French people (*M* = 0.22) died of drug disorder than Hungarian people (*M* = 0.06), W = 0, *p* < .001.
+
+Overall, most of the hypotheses were not suppoerted. In terms of indicators of death related to psychosomatics, more French people die than Hungarians. Note: Sample size must be considered for test results to be valid.
+
+
+##Description of the Dataset
+The source of the data is: ourworldindata.org The source of the data could be checked here also:
+https://ourworldindata.org/what-does-the-world-die-from
+
+##Exploratory Data Analyses
+
+```{r}
+str(my_data)
+
+names(my_data)[names(my_data) == "Cardiovascular.diseases.(%)"] <- "cardiovascular_diseases"
+names(my_data)[names(my_data) == "Cancers.(%)"] <- "cancers"
+names(my_data)[names(my_data) == "Respiratory.diseases.(%)"] <- "respiratory_diseases"
+names(my_data)[names(my_data) == "Diabetes.(%)"] <- "diabetes"
+names(my_data)[names(my_data) == "Dementia.(%)"] <- "dementia"
+names(my_data)[names(my_data) == "Lower.respiratory.infections.(%)"] <- "lower_respiratory_infections"
+names(my_data)[names(my_data) == "Neonatal.deaths.(%)"] <- "neonatal_deaths"
+names(my_data)[names(my_data) == "Diarrheal.diseases.(%)"] <- "diarrheal_diseases"
+names(my_data)[names(my_data) == "Road.accidents.(%)"] <- "road_accidents"
+names(my_data)[names(my_data) == "Liver.disease.(%)"] <- "liver_disease"
+names(my_data)[names(my_data) == "Tuberculosis.(%)"] <- "tuberculosis"
+names(my_data)[names(my_data) == "Kidney.disease.(%)"] <- "kidney_disease"
+names(my_data)[names(my_data) == "Digestive.diseases.(%)"] <- "digestive_diseases"
+names(my_data)[names(my_data) == "HIV/AIDS.(%)"] <- "HIV_AIDS"
+names(my_data)[names(my_data) == "Suicide.(%)"] <- "suicide"
+names(my_data)[names(my_data) == "Malaria.(%)"] <- "malaria"
+names(my_data)[names(my_data) == "Homicide.(%)"] <- "homicide"
+names(my_data)[names(my_data) == "Suicide.(%)"] <- "suicide"
+names(my_data)[names(my_data) == "Nutritional.deficiencies.(%)"] <- "nutritional_deficiences"
+names(my_data)[names(my_data) == "Meningitis.(%)"] <- "meningtis"
+names(my_data)[names(my_data) == "Protein-energy.malnutrition.(%)"] <- "protein_energy_malnutrition"
+names(my_data)[names(my_data) == "Drowning.(%)"] <- "drowning"
+names(my_data)[names(my_data) == "Nutritional.deficiencies.(%)"] <- "nutritional_deficiences"
+names(my_data)[names(my_data) == "Maternal.deaths.(%)"] <- "maternal_death"
+names(my_data)[names(my_data) == "Parkinson.disease.(%)"] <- "parkinson_disease"
+names(my_data)[names(my_data) == "Nutritional.deficiencies.(%)"] <- "nutritional_deficiences"
+names(my_data)[names(my_data) == "Alcohol.disorders.(%)"] <- "alcohol_disorders"
+names(my_data)[names(my_data) == "Intestinal.infectious.diseases.(%)"] <- "intestinal_infectious_diseases"
+names(my_data)[names(my_data) == "Drug.disorders.(%)"] <- "drug_disorders"
+names(my_data)[names(my_data) == "Hepatitis.(%)"] <- "hepatitis"
+names(my_data)[names(my_data) == "Fire.(%)"] <- "fire"
+names(my_data)[names(my_data) == "Heat-related.(hot.and.cold.exposure).(%)"] <- "heat_realeted"
+names(my_data)[names(my_data) == "Natural.disasters.(%)"] <- "natural_disasters"
+names(my_data)[names(my_data) == "Conflict.(%)"] <- "conflict"
+names(my_data)[names(my_data) == "Terrorism.(%)"] <- "terrorism"
+
+str(my_data)
+```
+
+
+
+Exploring the Nature of the Variables 
+
+```{r}
+summary(my_data)
+```
+Referring to the type of the variable, all the variables are numerical except the "country" which is character.
+Thanks to the "summary" function different details of each variable could be revealed. The minimum, the first quartile, the median, the mean, the third quartile and the maximum could be examined by each variable. 
+Due to the nature of the data / investigated phenomena there is no specific data that should be highlighted for any of the variables.
+
+##Exploratory Data Analyses
+
+Exploring Missing Variables in the Dataset
+
+Missing values were found in the dataset below the following variables: country_code: 864, Terrorism: 1398, Conflict: 1398.
+Since our hypothesis does not respect these variables, it is not worth to pay effort to replace the missing values. Thus, they can be simply dropped from the data set.
+
+
+```{r}
+sapply(my_data,function(x) sum(is.na(x)))
+my_data = subset(my_data, select = -c(2, 34, 35))
+str(my_data)
+```
+
+Exploring the Nature of the Variables
+
+```{r}
+summary(my_data)
+```
+
+###Check for outliers
+The source of the data is: ourworldindata.org
+Referring to the consideration of datacleaning,  the dataset is already cleared, I have checked it several times, therefore datacleaning is not needed in this case.
+The source of the data could be checked here also:
+https://ourworldindata.org/what-does-the-world-die-from
+
+```{r}
+summary(my_data)
+```
+
+###Tests of Normality
+
+```{r}
+str(my_data)
+
+
+df <- data.frame(cause_of_death=colnames(my_data)[3:31], 
+                p_value=NA)
+df
+
+x=0
+
+for(i in 3:31){
+x=x+1
+a <- ks.test(my_data[,i], "pnorm")
+df[x,2] <- a$p.value
+}
+df
+```
+#Hypothesis I
+In general significantly more Hungarian people died of cardiovascular diseases than French people.
+
+```{r}
+my_data_HUN <- filter(my_data, country=="Hungary")
+my_data_HUN
+
+my_data_FR <- filter(my_data, country=="France")
+my_data_FR
+
+wilcox.test(my_data_HUN$cardiovascular_diseases, my_data_FR$cardiovascular_diseases)
+mean(my_data_HUN$cardiovascular_diseases)
+mean(my_data_FR$cardiovascular_diseases)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(cardiovascular_diseases ~ country, data = tablenew)
+```
+
+The Wilcoxon rank test indicated that in general significantly more Hungarian people (*M* = 48.85) died of cardiovascular diseases than French people (*M* = 30,79), W = 729, *p* < .001.
+
+
+#Hypothesis II
+In general significantly more Hungarian people died of cancer than French people.
+
+```{r}
+wilcox.test(my_data_HUN$cancers, my_data_FR$cancers)
+mean(my_data_HUN$cancers)
+mean(my_data_FR$cancers)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(cancers ~ country, data = tablenew)
+```
+
+The Wilcoxon rank test indicated that in general not significantly more Hungarian people (*M* = 24.86) died of cancer than French people (*M* =  29.39), W = 0, *p* <  .001.
+The Wilcoxon rank test indicated that in general significantly more French people (*M* =  29.39) died of cancer than Hungarian people (*M* = 24.86), W = 0, *p* < .001.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
+
+
+#Hypothesis III.
+In general significantly more Hungarian people died of respiratory diseases than French people.
+
+```{r}
+wilcox.test(my_data_HUN$respiratory_diseases, my_data_FR$respiratory_diseases)
+mean(my_data_HUN$respiratory_diseases)
+mean(my_data_FR$respiratory_diseases)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(respiratory_diseases ~ country, data = tablenew)
+```
+
+The Wilcoxon rank test indicated that in general not significantly more Hungarian people (*M* = 3.72) died of respiratory diseases than French people (*M* =  4.07), W = 180, *p* <  .001.
+The Wilcoxon rank test indicated that in general  significantly more  French people (*M* =  4.07) died of respiratory diseases than Hungarian people (*M* = 3.72),  W = 180, *p* < .001.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
+
+
+#Hypothesis IV.
+In general significantly more Hungarian people died of digestive diseases than French people.
+
+```{r}
+wilcox.test(my_data_HUN$digestive_diseases, my_data_FR$digestive_diseases)
+mean(my_data_HUN$digestive_diseases)
+mean(my_data_FR$digestive_diseases)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(digestive_diseases ~ country, data = tablenew)
+```
+The Wilcoxon rank test indicated that in general not significantly more Hungarian people (*M* = 2.19) died of digestive diseases than French people (*M* =  2.63), W = 0, *p* < .001.
+The Wilcoxon rank test indicated that in general significantly more French people (*M* =  2.63) died of digestive diseases than Hungarian people (*M* = 2.19), W = 0, *p* < .001.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
+
+
+#Hypothesis V.
+In general significantly more Hungarian people committed (successful) suicide than French people.
+
+```{r}
+wilcox.test(my_data_HUN$suicide, my_data_FR$suicide)
+mean(my_data_HUN$suicide)
+mean(my_data_FR$suicide)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(suicide ~ country, data = tablenew)
+```
+The Wilcoxon rank test indicated that in general not significantly more Hungarian people (*M* = 2.27) died of suicide than French people (*M* = 2.53), W = 184, *p* < .001.
+The Wilcoxon rank test indicated that in general significantly more French people (*M* = 2.53) died of suicide than Hungarian people (*M* = 2.27), W = 184, *p* < .001.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
+
+
+#Hypothesis VI.
+In general significantly more Hungarian people died of homicide than French people.
+
+```{r}
+wilcox.test(my_data_HUN$homicide, my_data_FR$homicide)
+mean(my_data_HUN$homicide)
+mean(my_data_FR$homicide)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(homicide ~ country, data = tablenew)
+```
+The Wilcoxon rank test indicated that in general significantly more Hungarian people (*M* = 0.21) died of homicide than French people (*M* = 0.15), W = 639, *p* < .001.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
+
+
+#Hypothesis VII.
+In general significantly more Hungarian people died of alcohol disorder than French people.
+
+```{r}
+wilcox.test(my_data_HUN$alcohol_disorders, my_data_FR$alcohol_disorders)
+mean(my_data_HUN$alcohol_disorders)
+mean(my_data_FR$alcohol_disorders)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(alcohol_disorders ~ country, data = tablenew)
+```
+The Wilcoxon rank test indicated that in general not significantly more Hungarian people (*M* = 0.52) died of alcohol disorder than French people (*M* = 0.61), W = 219, *p* = .01. The Wilcoxon rank test indicated that in general significantly more French people (*M* = 0.61) died of alcohol disorder than Hungarian (*M* = 0.52), W = 219, *p* = 0.01.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
+
+
+#Hypothesis VIII.
+In general significantly more Hungarian people died of drug disorder than French people.
+
+```{r}
+wilcox.test(my_data_HUN$drug_disorders, my_data_FR$drug_disorders)
+mean(my_data_HUN$drug_disorders)
+mean(my_data_FR$drug_disorders)
+
+tablenew <- filter(my_data, country=="Hungary" | country== "France")
+tablenew
+boxplot(drug_disorders ~ country, data = tablenew)
+```
+
+The Wilcoxon rank test indicated that in general not significantly more Hungarian people (*M* = 0.06) died of drug disorder than French people (*M* = 0.22), W = 0, *p* < .001. The Wilcoxon rank test indicated that in general  significantly more French people (*M* = 0.22) died of drug disorder than  Hungarian people (*M* = 0.06),  W = 0, *p* < .001.
+
+Note: Referring to the validity of the test, it is important to take into consideration the small sample size on which the test was performed.
